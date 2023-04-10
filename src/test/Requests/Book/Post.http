@@ -1,0 +1,29 @@
+###
+POST http://localhost:8080/books
+Content-Type: application/json
+
+{
+  "id": 1111,
+  "title": "Sammy Keyes and the Art of Deception",
+  "authors": ["Wendelin Van Draanen"],
+  "language": "en",
+  "publishDate": "2009-01-16",
+  "categories":["Juvenile Fiction"],
+  "rate": 0,
+  "publisher": "Yearling"
+}
+
+###
+POST http://localhost:8080/books
+Content-Type: application/json
+
+{
+  "id": 1112,
+  "title": "Classes on Modern Poets and the Art of Poetry",
+  "authors": ["James Dickey", "Donald J. Greiner"],
+  "language": "en",
+  "publishDate": "2009-01-16",
+  "categories":["Biography & Autobiography"],
+  "rate": 3.2,
+  "publisher": "Univ of South Carolina Press"
+}
