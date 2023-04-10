@@ -1,14 +1,17 @@
 package com.example.library.controller;
 
+import com.example.library.object.Library;
 import com.example.library.object.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.library.object.Library.users;
+
 @RestController()
 public class UserController {
-    List<User> users = new ArrayList<>();
+//    public static List<User> users = new ArrayList<>();
 
     @PostMapping("/user")
     public String addUser(@RequestBody User user) {

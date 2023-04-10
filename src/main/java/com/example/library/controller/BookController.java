@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.library.object.Library.books;
 import static java.lang.Math.min;
 
 @RestController()
 public class BookController {
-    List<Book> books = new ArrayList<>();
+//    public static List<Book> books = new ArrayList<>();
 
     @GetMapping("/books")
     public List<Book> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
