@@ -1,37 +1,31 @@
 package com.example.library.controller;
 
 import com.example.library.object.Book;
+import com.example.library.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.library.object.Library.books;
-import static java.lang.Math.min;
 
 @RestController()
 public class BookController {
-//    public static List<Book> books = new ArrayList<>();
+
+    @Autowired
+    BookService bookService;
 
     @GetMapping("/books")
     public List<Book> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return books.subList(page * size, min((page + 1) * size, books.size()));
+        return  bookService.getBooks(page,size);
     }
 
     @GetMapping("/book/{id}")
-    public List<Book> getBook(@PathVariable long id) {
-        return books.stream().filter(book -> book.getId() == id).toList();
+    public Book getBook(@PathVariable long id) {
+        return  bookService.getBook(id);
     }
 
     @PostMapping("/book")
-    public String addBook(@RequestBody Book book) {
-        book.setReserved(false);
-        if (books.stream().anyMatch(b -> book.getId() == b.getId())) {
-            return String.format("Book '%s' already exist.",book.getTitle());
-        }
-        books.add(book);
-        return String.format("Book '%s' added successfully.",book.getTitle());
+    public Book addBook(@RequestBody Book book) {
+        return bookService.addBook(book);
     }
-
-
 }
