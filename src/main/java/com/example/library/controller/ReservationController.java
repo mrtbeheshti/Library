@@ -14,7 +14,6 @@ import static com.example.library.object.Library.*;
 
 @RestController
 public class ReservationController {
-//    private List<Reservation> reservations = new ArrayList<>();
 
     @PostMapping("/reserve")
     public String reserve(@RequestParam(value = "user_id") long userId, @RequestParam(value = "book_id") long bookId) throws NoPermissionException {

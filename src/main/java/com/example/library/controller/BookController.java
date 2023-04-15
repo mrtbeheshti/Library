@@ -9,21 +9,21 @@ import java.util.List;
 import static com.example.library.object.Library.books;
 import static java.lang.Math.min;
 
-@RestController()
+@RestController("/books")
 public class BookController {
 //    public static List<Book> books = new ArrayList<>();
 
-    @GetMapping("/books")
+    @GetMapping()
     public List<Book> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return books.subList(page * size, min((page + 1) * size, books.size()));
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/{id}")
     public List<Book> getBook(@PathVariable long id) {
         return books.stream().filter(book -> book.getId() == id).toList();
     }
 
-    @PostMapping("/book")
+    @PostMapping("")
     public String addBook(@RequestBody Book book) {
         book.setReserved(false);
         if (books.stream().anyMatch(b -> book.getId() == b.getId())) {
