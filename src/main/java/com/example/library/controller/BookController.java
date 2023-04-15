@@ -1,21 +1,24 @@
 package com.example.library.controller;
 
 import com.example.library.object.Book;
+import com.example.library.service.BookService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.library.object.Library.books;
-import static java.lang.Math.min;
 
 @RestController("/books")
 public class BookController {
-//    public static List<Book> books = new ArrayList<>();
+
+    final BookService bookService;
+
+    public BookController() {
+        this.bookService = new BookService();
+    }
 
     @GetMapping()
     public List<Book> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return books.subList(page * size, min((page + 1) * size, books.size()));
+        return  this.bookService.getBooks(page,size);
     }
 
     @GetMapping("/{id}")
@@ -32,6 +35,4 @@ public class BookController {
         books.add(book);
         return String.format("Book '%s' added successfully.",book.getTitle());
     }
-
-
 }
