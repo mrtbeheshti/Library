@@ -10,24 +10,24 @@ import java.util.List;
 @RestController("/books")
 public class BookController {
 
-    final BookService bookService;
+    final BookService service;
 
     public BookController() {
-        this.bookService = new BookService();
+        this.service = new BookService();
     }
 
     @GetMapping()
     public List<Book> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return  this.bookService.getBooks(page,size);
+        return  this.service.getBooks(page,size);
     }
 
     @GetMapping("/{id}")
     public Book getBook(@PathVariable long id) {
-        return this.bookService.getBook(id);
+        return this.service.getBook(id);
     }
 
     @PostMapping("")
     public Book addBook(@RequestBody Book book) {
-        return this.bookService.addBook(book);
+        return this.service.addBook(book);
     }
 }
