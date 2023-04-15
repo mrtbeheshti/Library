@@ -1,4 +1,4 @@
 POST http://127.0.0.1:8080/reserve?book_id=1111&user_id=1
 
 ###
-PUT http://127.0.0.1:8080/return?book_id=1111&user_id=1
+PUT http://127.0.0.1:8080/return?book_id=1111

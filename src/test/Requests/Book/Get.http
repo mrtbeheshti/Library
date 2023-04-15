@@ -2,4 +2,4 @@
 GET http://localhost:8080/books
 
 ###
-GET http://localhost:8080/book/1111
+GET http://localhost:8080/books/1111
