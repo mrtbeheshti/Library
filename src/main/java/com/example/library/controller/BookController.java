@@ -22,17 +22,12 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public List<Book> getBook(@PathVariable long id) {
-        return books.stream().filter(book -> book.getId() == id).toList();
+    public Book getBook(@PathVariable long id) {
+        return this.bookService.getBook(id);
     }
 
     @PostMapping("")
-    public String addBook(@RequestBody Book book) {
-        book.setReserved(false);
-        if (books.stream().anyMatch(b -> book.getId() == b.getId())) {
-            return String.format("Book '%s' already exist.",book.getTitle());
-        }
-        books.add(book);
-        return String.format("Book '%s' added successfully.",book.getTitle());
+    public Book addBook(@RequestBody Book book) {
+        return this.bookService.addBook(book);
     }
 }
