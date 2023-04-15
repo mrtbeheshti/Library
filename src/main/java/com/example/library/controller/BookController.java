@@ -10,29 +10,24 @@ import java.util.List;
 @RestController("/books")
 public class BookController {
 
-    final BookService bookService;
+    final BookService service;
 
     public BookController() {
-        this.bookService = new BookService();
+        this.service = new BookService();
     }
 
     @GetMapping()
     public List<Book> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return  this.bookService.getBooks(page,size);
+        return  this.service.getBooks(page,size);
     }
 
     @GetMapping("/{id}")
-    public List<Book> getBook(@PathVariable long id) {
-        return books.stream().filter(book -> book.getId() == id).toList();
+    public Book getBook(@PathVariable long id) {
+        return this.service.getBook(id);
     }
 
     @PostMapping("")
-    public String addBook(@RequestBody Book book) {
-        book.setReserved(false);
-        if (books.stream().anyMatch(b -> book.getId() == b.getId())) {
-            return String.format("Book '%s' already exist.",book.getTitle());
-        }
-        books.add(book);
-        return String.format("Book '%s' added successfully.",book.getTitle());
+    public Book addBook(@RequestBody Book book) {
+        return this.service.addBook(book);
     }
 }
