@@ -4,7 +4,8 @@ import com.example.library.object.User;
 import com.example.library.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/users")
+@RestController()
+@RequestMapping("users")
 public class UserController {
 
     final UserService service;
@@ -13,17 +14,14 @@ public class UserController {
         this.service = new UserService();
     }
 
-    @PostMapping("")
+    @PostMapping()
     public User addUser(@RequestBody User user) {
         return this.service.addUser(user);
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public User getUser(@PathVariable long id){
         return this.service.getUser(id);
     }
-
-
-
 }

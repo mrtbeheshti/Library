@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@RestController("/books")
+@RestController()
+@RequestMapping("books")
 public class BookController {
 
     final BookService service;
@@ -21,12 +22,12 @@ public class BookController {
         return  this.service.getBooks(page,size);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public Book getBook(@PathVariable long id) {
         return this.service.getBook(id);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public Book addBook(@RequestBody Book book) {
         return this.service.addBook(book);
     }
