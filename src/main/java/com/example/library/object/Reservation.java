@@ -1,5 +1,7 @@
 package com.example.library.object;
 
+import com.example.library.exception.BaseException;
+import com.example.library.exception.ExceptionsEnum;
 import lombok.*;
 
 import javax.naming.NoPermissionException;
@@ -17,11 +19,11 @@ public class Reservation {
     private LocalDateTime reserveDate;
     private LocalDateTime returnDate;
 
-    public void reserveBook() throws NoPermissionException {
+    public void reserveBook() {
         if (this.getBook().isReserved())
-            throw new NoPermissionException(String.format("%s is reserved right now.", this.getBook().getTitle()));
+            throw new BaseException(String.format("%s is reserved right now.", this.getBook().getTitle()), ExceptionsEnum.IS_RESERVED);
         if (this.getUser().getReserves() > this.getMaxReserves() - 1)
-            throw new NoPermissionException(String.format("%s %s has reached maximum reserves", this.getUser().getFirstName(), this.getUser().getLastName()));
+            throw new BaseException(String.format("%s %s has reached maximum reserves", this.getUser().getFirstName(), this.getUser().getLastName()), ExceptionsEnum.MAXIMUM_RESERVES_REACHED);
         this.getUser().setReserves(this.getUser().getReserves() + 1);
         this.getBook().setReserved(true);
         this.setReserveDate(LocalDateTime.now());

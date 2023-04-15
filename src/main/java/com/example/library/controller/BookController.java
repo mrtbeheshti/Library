@@ -1,5 +1,6 @@
 package com.example.library.controller;
 
+import com.example.library.exception.BaseException;
 import com.example.library.object.Book;
 import com.example.library.service.BookService;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,12 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public Book getBook(@PathVariable long id) {
+    public Book getBook(@PathVariable long id) throws BaseException {
         return this.service.getBook(id);
     }
 
     @PostMapping()
-    public Book addBook(@RequestBody Book book) {
+    public Book addBook(@RequestBody Book book) throws BaseException {
         return this.service.addBook(book);
     }
 }
