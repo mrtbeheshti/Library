@@ -13,7 +13,7 @@ public class BaseException extends RuntimeException {
     private LocalDateTime time;
     public BaseException(String message, ExceptionsEnum exceptionsEnum){
         super(message);
-        this.status = exceptionsEnum.get();
+        this.status = exceptionsEnum.getStatus();
         this.time = LocalDateTime.now();
     }
 

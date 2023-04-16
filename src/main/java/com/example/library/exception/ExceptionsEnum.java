@@ -1,8 +1,11 @@
 package com.example.library.exception;
 
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-
+@Getter
+@RequiredArgsConstructor
 public enum ExceptionsEnum {
     ALREADY_EXIST(HttpStatus.CONFLICT),
     NOT_EXIST(HttpStatus.NOT_FOUND),
@@ -11,10 +14,4 @@ public enum ExceptionsEnum {
 
     private final HttpStatus status;
 
-    ExceptionsEnum(HttpStatus status) {
-        this.status = status;
-    }
-    public HttpStatus get(){
-        return status;
-    }
 }
