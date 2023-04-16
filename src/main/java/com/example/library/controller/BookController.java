@@ -22,12 +22,12 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public Book getBook(@PathVariable long id) throws BaseException {
+    public Book getBook(@PathVariable long id) {
         return this.service.getBook(id);
     }
 
     @PostMapping()
-    public Book addBook(@RequestBody Book book) throws BaseException {
+    public Book addBook(@RequestBody Book book) {
         return this.service.addBook(book);
     }
 }

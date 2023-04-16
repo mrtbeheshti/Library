@@ -20,7 +20,7 @@ public class ReservationController {
     @PostMapping("/reserve")
     public Reservation reserve(
             @RequestParam(value = "user_id") long userId,
-            @RequestParam(value = "book_id") long bookId) throws NoPermissionException {
+            @RequestParam(value = "book_id") long bookId) {
         return this.service.reserve(bookId,userId);
     }
 
