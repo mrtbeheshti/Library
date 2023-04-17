@@ -14,13 +14,13 @@ public class UserController {
     private final UserService service;
 
     @PostMapping()
-    public User addUser(@RequestBody User user) throws BaseException {
+    public User addUser(@RequestBody User user) {
         return this.service.addUser(user);
 
     }
 
     @GetMapping("{id}")
-    public User getUser(@PathVariable long id) throws BaseException {
+    public User getUser(@PathVariable long id) {
         return this.service.getUser(id);
     }
 }
