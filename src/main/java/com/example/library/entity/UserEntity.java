@@ -1,13 +1,13 @@
 package com.example.library.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -25,7 +25,9 @@ public class UserEntity extends BaseEntity{
     @Column
     private LocalDate birthdate;
 
-    @Column
-    private int reserves;
+    @OneToMany( targetEntity = ReservationEntity.class,
+                fetch = FetchType.LAZY,
+                mappedBy = "user")
+    private Set<ReservationEntity> reserves;
 
 }
