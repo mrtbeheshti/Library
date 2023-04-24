@@ -3,7 +3,6 @@ package com.example.library.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,8 +41,8 @@ public class BookEntity extends BaseEntity{
     @Column
     private float rate;
 
-    @OneToOne(mappedBy = "book")
-    private ReservationEntity reserve;
+    @Column
+    private boolean isReserved;
 
 
 }
