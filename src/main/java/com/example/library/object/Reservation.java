@@ -3,9 +3,11 @@ package com.example.library.object;
 import com.example.library.entity.ReservationEntity;
 import com.example.library.exception.BaseException;
 import com.example.library.exception.ExceptionsEnum;
+//import com.example.library.exception.BaseException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import javax.naming.NoPermissionException;
 import java.time.LocalDateTime;
 
 @Builder
@@ -13,8 +15,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Reservation {
+    @JsonIgnore
     final private int MaxReserves = 3;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private long id;
     private User user;
     private Book book;
     private LocalDateTime reserveDate;

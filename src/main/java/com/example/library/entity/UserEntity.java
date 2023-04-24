@@ -3,13 +3,14 @@ package com.example.library.entity;
 import com.example.library.object.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@Builder
+@SuperBuilder
 @Setter
 @Getter
-@Entity
+@Entity(name = "lib_user")
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends BaseEntity{
@@ -20,14 +21,15 @@ public class UserEntity extends BaseEntity{
     @Column(name = "last_name")
     private String lastName;
 
-    @Column
+    @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @Column
+    @Column(name = "reserves")
     private int reserves;
 
     public static UserEntity from(User user) {
         return UserEntity.builder()
+                .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
