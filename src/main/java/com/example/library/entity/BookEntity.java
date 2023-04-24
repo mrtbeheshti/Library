@@ -1,16 +1,15 @@
 package com.example.library.entity;
 
+import com.example.library.object.Book;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Builder
 @Setter
 @Getter
 @Entity
@@ -44,5 +43,18 @@ public class BookEntity extends BaseEntity{
     @Column
     private boolean isReserved;
 
+    public static BookEntity from(Book book){
+        return BookEntity.builder()
+                .authors(book.getAuthors())
+                .title(book.getTitle())
+                .language(book.getLanguage())
+                .publishDate(book.getPublishDate())
+                .publisher(book.getPublisher())
+                .categories(book.getCategories())
+                .rate(book.getRate())
+                .isReserved(book.isReserved())
+                .build();
+
+    }
 
 }

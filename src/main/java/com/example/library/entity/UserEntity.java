@@ -1,13 +1,12 @@
 package com.example.library.entity;
 
+import com.example.library.object.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Builder
 @Setter
 @Getter
 @Entity
@@ -27,4 +26,12 @@ public class UserEntity extends BaseEntity{
     @Column
     private int reserves;
 
+    public static UserEntity from(User user) {
+        return UserEntity.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .birthdate(user.getBirthdate())
+                .build();
+
+    }
 }

@@ -1,22 +1,19 @@
 package com.example.library.entity;
 
-import com.example.library.object.Book;
-import com.example.library.object.User;
+import com.example.library.object.Reservation;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Setter
 @Getter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class ReservationEntity extends BaseEntity{
-
     @Transient
     final private int MaxReserves = 3;
 
@@ -34,5 +31,14 @@ public class ReservationEntity extends BaseEntity{
     @Column(name = "return")
     private LocalDateTime returnDate;
 
+    public static ReservationEntity from(Reservation reserve){
+        return ReservationEntity
+                .builder()
+                .user(UserEntity.from(reserve.getUser()))
+                .book(BookEntity.from(reserve.getBook()))
+                .reserveDate(reserve.getReserveDate())
+                .returnDate(reserve.getReturnDate())
+                .build();
+    }
 
 }

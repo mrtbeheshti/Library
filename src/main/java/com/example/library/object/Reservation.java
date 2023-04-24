@@ -1,5 +1,6 @@
 package com.example.library.object;
 
+import com.example.library.entity.ReservationEntity;
 import com.example.library.exception.BaseException;
 import com.example.library.exception.ExceptionsEnum;
 import lombok.*;
@@ -19,6 +20,7 @@ public class Reservation {
     private LocalDateTime reserveDate;
     private LocalDateTime returnDate;
 
+
     public void reserveBook() {
         if (this.getBook().isReserved())
             throw new BaseException(String.format("%s is reserved right now.", this.getBook().getTitle()), ExceptionsEnum.IS_RESERVED);
@@ -33,5 +35,13 @@ public class Reservation {
         this.getUser().setReserves(this.getUser().getReserves() - 1);
         this.getBook().setReserved(false);
         this.setReturnDate(LocalDateTime.now());
+    }
+    public static Reservation from(ReservationEntity reserve) {
+        return Reservation.builder()
+                .user(User.from(reserve.getUser()))
+                .book(Book.from(reserve.getBook()))
+                .reserveDate(reserve.getReserveDate())
+                .returnDate(reserve.getReturnDate())
+                .build();
     }
 }
