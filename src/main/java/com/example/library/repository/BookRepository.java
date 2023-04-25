@@ -10,6 +10,4 @@ import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity,Long> {
-    Page<BookEntity> findAll(Pageable pageable);
-    Optional<BookEntity> findById(long id);
 }
