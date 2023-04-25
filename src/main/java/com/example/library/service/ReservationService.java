@@ -4,6 +4,7 @@ import com.example.library.entity.BookEntity;
 import com.example.library.entity.ReservationEntity;
 import com.example.library.entity.UserEntity;
 import com.example.library.exception.BaseException;
+import com.example.library.exception.ExceptionsEnum;
 import com.example.library.object.Book;
 import com.example.library.object.Reservation;
 import com.example.library.object.User;
@@ -30,6 +31,7 @@ public class ReservationService {
         User user = User.from(this.userRepository.findById(_userId).orElseThrow(
                 () -> new BaseException("there is no user by this id.", NOT_EXIST)
         ));
+
         Reservation reservation = Reservation.builder().book(book).user(user).build();
         reservation.reserveBook();
 

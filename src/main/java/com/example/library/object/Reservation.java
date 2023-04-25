@@ -43,6 +43,7 @@ public class Reservation {
     }
     public static Reservation from(ReservationEntity reserve) {
         return Reservation.builder()
+                .id(reserve.getId())
                 .user(User.from(reserve.getUser()))
                 .book(Book.from(reserve.getBook()))
                 .reserveDate(reserve.getReserveDate())
