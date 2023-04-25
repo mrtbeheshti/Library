@@ -4,7 +4,6 @@ import com.example.library.entity.BookEntity;
 import com.example.library.entity.ReservationEntity;
 import com.example.library.entity.UserEntity;
 import com.example.library.exception.BaseException;
-import com.example.library.exception.ExceptionsEnum;
 import com.example.library.object.Book;
 import com.example.library.object.Reservation;
 import com.example.library.object.User;
@@ -13,8 +12,6 @@ import com.example.library.repository.ReservationRepository;
 import com.example.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 import static com.example.library.exception.ExceptionsEnum.NOT_EXIST;
 
