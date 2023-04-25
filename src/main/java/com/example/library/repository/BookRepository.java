@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<BookEntity,Long> {
     Page<BookEntity> findAll(Pageable pageable);
     Optional<BookEntity> findById(long id);
-    @SuppressWarnings("unchecked")
-    BookEntity save(BookEntity bookEntity);
 }
