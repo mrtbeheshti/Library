@@ -1,7 +1,6 @@
 package com.example.library.service;
 
 import com.example.library.entity.BookEntity;
-
 import com.example.library.exception.BaseException;
 import com.example.library.exception.ExceptionsEnum;
 import com.example.library.object.Book;
@@ -12,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.lang.Math.E;
-import static java.lang.Math.min;
-
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +19,7 @@ public class BookService{
     public List<Book> getBooks(int page, int size) {
 
         return this.repository.findAll(PageRequest.of(page, size)).getContent()
-                .stream().map(bookEntity -> Book.from(bookEntity)).toList();
+                .stream().map(Book::from).toList();
     }
 
     public Book getBook(long id) {

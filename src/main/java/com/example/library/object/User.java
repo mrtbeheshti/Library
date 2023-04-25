@@ -2,7 +2,8 @@ package com.example.library.object;
 
 import com.example.library.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDate;
 
