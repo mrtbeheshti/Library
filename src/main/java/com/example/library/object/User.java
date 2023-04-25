@@ -23,6 +23,7 @@ public class User {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
+                .reserves(user.getReserves())
                 .build();
     }
 }

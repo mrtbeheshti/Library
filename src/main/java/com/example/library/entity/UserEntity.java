@@ -11,6 +11,10 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Entity(name = "lib_user")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {
+        "first_name",
+        "last_name",
+        "birthdate"})})
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends BaseEntity{
@@ -33,7 +37,7 @@ public class UserEntity extends BaseEntity{
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
+                .reserves(user.getReserves())
                 .build();
-
     }
 }
