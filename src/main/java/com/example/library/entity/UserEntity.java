@@ -35,6 +35,7 @@ public class UserEntity extends BaseEntity{
     public static UserEntity from(User user) {
         return UserEntity.builder()
                 .id(user.getId())
+                .phoneNumber(user.getPhoneNumber())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
