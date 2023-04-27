@@ -11,10 +11,6 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Entity(name = "lib_user")
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {
-        "first_name",
-        "last_name",
-        "birthdate"})})
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends BaseEntity{
@@ -24,6 +20,11 @@ public class UserEntity extends BaseEntity{
 
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name="phone_number",
+            unique = true,
+            nullable = false)
+    private String phoneNumber;
 
     @Column(name = "birthdate")
     private LocalDate birthdate;
