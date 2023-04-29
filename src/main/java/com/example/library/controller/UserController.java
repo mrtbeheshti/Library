@@ -1,12 +1,11 @@
 package com.example.library.controller;
 
-import com.example.library.exception.BaseException;
 import com.example.library.object.User;
 import com.example.library.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RestController()
+@RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
 public class UserController {
