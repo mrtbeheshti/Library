@@ -1,6 +1,7 @@
 package com.example.library.object;
 
 import com.example.library.entity.BookEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -15,13 +16,21 @@ import java.util.List;
 public class Book {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
+    @JsonProperty(value = "title")
     private String title;
+    @JsonProperty(value = "authors")
     private List<String> authors;
+    @JsonProperty(value = "language")
     private String language;
+    @JsonProperty(value = "publish_date")
     private LocalDate publishDate;
+    @JsonProperty(value = "publisher")
     private String publisher;
+    @JsonProperty(value = "categories")
     private List<String> categories;
+    @JsonProperty(value = "rate")
     private float rate;
+    @JsonIgnore
     private boolean isReserved;
 
     public static Book from(BookEntity book){
