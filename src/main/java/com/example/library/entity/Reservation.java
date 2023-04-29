@@ -4,6 +4,7 @@ import com.example.library.object.ReservationDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,14 +19,15 @@ public class Reservation extends BaseEntity{
     final private int MaxReserves = 3;
 
     @ManyToOne (fetch = FetchType.EAGER,targetEntity = User.class)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     @OneToOne(targetEntity = Book.class)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id",unique = true,nullable = false)
     private Book book;
 
-    @Column(name = "reserve_date")
+    @Column(name = "reserve_date",nullable = false)
+    @CreationTimestamp
     private LocalDateTime reserveDate;
 
 

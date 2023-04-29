@@ -4,7 +4,6 @@ import com.example.library.object.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
 import java.time.LocalDate;
 
 @SuperBuilder
@@ -15,18 +14,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class User extends BaseEntity{
 
-    @Column(name = "first_name")
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name",nullable = false)
     private String lastName;
 
     @Column(name="phone_number",
             unique = true,
-            nullable = false)
+            nullable = false
+    )
     private String phoneNumber;
 
-    @Column(name = "birthdate")
+    @Column(name = "birthdate",nullable = false)
     private LocalDate birthdate;
 
     @Column(name = "reserves")

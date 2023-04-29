@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 public class UserService {
     final UserRepository repository;
     public UserDTO addUser(UserDTO user) {
-        user.setReserves(0);
+        if (this.repository.existsByPhoneNumber(user.getPhoneNumber()))
+            throw new BaseException("this phone number is already exist.", ExceptionsEnum.ALREADY_EXIST);
         return UserDTO.from(this.repository.save(User.from(user)));
     }
 

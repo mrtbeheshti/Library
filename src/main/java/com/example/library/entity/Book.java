@@ -19,15 +19,15 @@ import java.util.List;
 @NoArgsConstructor
 public class Book extends BaseEntity{
 
-    @Column(name = "title")
+    @Column(name = "title",unique = true,nullable = false)
     private String title;
 
     @Builder.Default
-    @Column(name = "authors")
+    @Column(name = "authors",nullable = false)
     @ElementCollection
     private List<String> authors= new ArrayList<>();
 
-    @Column(name = "language")
+    @Column(name = "language",nullable = false)
     private String language;
 
     @Column(name = "publish_date")

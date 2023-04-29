@@ -6,21 +6,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("reserves")
 @RequiredArgsConstructor
 public class ReservationController {
 
     private final ReservationService service;
 
 
-    @PostMapping("/reserve")
+    @PostMapping()
     public ReservationDTO reserve(
             @RequestParam(value = "user_id") long userId,
             @RequestParam(value = "book_id") long bookId) {
         return this.service.reserve(bookId,userId);
     }
 
-    @DeleteMapping("/reserve")
-    public ReservationDTO endReservation(@RequestParam(value = "book_id") long bookId) {
+    @DeleteMapping("{bookId}")
+    public ReservationDTO endReservation(@PathVariable long bookId) {
         return this.service.endReservation(bookId);
     }
 }

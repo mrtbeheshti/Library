@@ -60,7 +60,6 @@ public class ReservationService {
             throw new BaseException(String.format("%s %s has reached maximum reserves", reservation.getUser().getFirstName(), reservation.getUser().getLastName()), ExceptionsEnum.MAXIMUM_RESERVES_REACHED);
         reservation.getUser().setReserves(reservation.getUser().getReserves() + 1);
         reservation.getBook().setReserved(true);
-        reservation.setReserveDate(LocalDateTime.now());
     }
 
 

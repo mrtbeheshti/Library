@@ -27,7 +27,9 @@ public class BookService{
     }
 
     public BookDTO addBook(BookDTO book) {
-        book.setReserved(false);
+        if (this.repository.existsByTitle(book.getTitle())){
+            throw new BaseException("This book is already exist.", ExceptionsEnum.ALREADY_EXIST);
+        }
         return BookDTO.from(this.repository.save(Book.from((book))));
     }
     public BookDTO deleteBook(long id) {
