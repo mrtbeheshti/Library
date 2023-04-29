@@ -30,4 +30,9 @@ public class BookController {
     public BookDTO addBook(@RequestBody BookDTO book) {
         return this.service.addBook(book);
     }
+
+    @DeleteMapping("{id}")
+    public BookDTO deleteBook(@PathVariable long id) {
+        return this.service.deleteBook(id);
+    }
 }

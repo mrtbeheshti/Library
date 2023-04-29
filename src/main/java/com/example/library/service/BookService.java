@@ -30,4 +30,10 @@ public class BookService{
         book.setReserved(false);
         return BookDTO.from(this.repository.save(Book.from((book))));
     }
+    public BookDTO deleteBook(long id) {
+        BookDTO book = this.getBook(id);
+        this.repository.delete(Book.from(book));
+        return book;
+    }
+
 }
