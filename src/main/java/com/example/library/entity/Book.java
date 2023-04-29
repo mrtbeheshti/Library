@@ -1,6 +1,6 @@
 package com.example.library.entity;
 
-import com.example.library.object.Book;
+import com.example.library.object.BookDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ import java.util.List;
 @Entity(name = "lib_book")
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookEntity extends BaseEntity{
+public class Book extends BaseEntity{
 
     @Column(name = "title")
     private String title;
@@ -47,8 +47,8 @@ public class BookEntity extends BaseEntity{
     private boolean isReserved;
 
 
-    public static BookEntity from(Book book){
-        return BookEntity.builder()
+    public static Book from(BookDTO book){
+        return Book.builder()
                 .id(book.getId())
                 .authors(book.getAuthors())
                 .title(book.getTitle())

@@ -1,6 +1,6 @@
 package com.example.library.controller;
 
-import com.example.library.object.User;
+import com.example.library.object.UserDTO;
 import com.example.library.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +13,13 @@ public class UserController {
     private final UserService service;
 
     @PostMapping()
-    public User addUser(@RequestBody User user) {
+    public UserDTO addUser(@RequestBody UserDTO user) {
         return this.service.addUser(user);
 
     }
 
     @GetMapping("{id}")
-    public User getUser(@PathVariable long id) {
+    public UserDTO getUser(@PathVariable long id) {
         return this.service.getUser(id);
     }
 }

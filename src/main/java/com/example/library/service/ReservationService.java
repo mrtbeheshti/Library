@@ -1,13 +1,13 @@
 package com.example.library.service;
 
-import com.example.library.entity.BookEntity;
-import com.example.library.entity.ReservationEntity;
-import com.example.library.entity.UserEntity;
+import com.example.library.entity.Book;
+import com.example.library.entity.Reservation;
+import com.example.library.entity.User;
 import com.example.library.exception.BaseException;
 import com.example.library.exception.ExceptionsEnum;
-import com.example.library.object.Book;
-import com.example.library.object.Reservation;
-import com.example.library.object.User;
+import com.example.library.object.BookDTO;
+import com.example.library.object.ReservationDTO;
+import com.example.library.object.UserDTO;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.ReservationRepository;
 import com.example.library.repository.UserRepository;
@@ -27,33 +27,33 @@ public class ReservationService {
     private final BookRepository bookRepository;
 
 
-    public Reservation reserve(long _bookId, long _userId) {
-        Book book = Book.from(this.bookRepository.findById(_bookId).orElseThrow(
+    public ReservationDTO reserve(long _bookId, long _userId) {
+        BookDTO book = BookDTO.from(this.bookRepository.findById(_bookId).orElseThrow(
                 () -> new BaseException("There is no book with this id.", NOT_EXIST)
         ));
-        User user = User.from(this.userRepository.findById(_userId).orElseThrow(
+        UserDTO user = UserDTO.from(this.userRepository.findById(_userId).orElseThrow(
                 () -> new BaseException("there is no user by this id.", NOT_EXIST)
         ));
 
-        Reservation reservation = Reservation.builder().book(book).user(user).build();
+        ReservationDTO reservation = ReservationDTO.builder().book(book).user(user).build();
         this.reserveBook(reservation);
 
-        this.bookRepository.save(BookEntity.from(book));
-        this.userRepository.save(UserEntity.from(user));
-        return Reservation.from(reservationRepository.save(ReservationEntity.from(reservation)));
+        this.bookRepository.save(Book.from(book));
+        this.userRepository.save(User.from(user));
+        return ReservationDTO.from(reservationRepository.save(Reservation.from(reservation)));
     }
-    public Reservation endReservation(long _bookId) {
-        Book book =  Book.from(this.bookRepository.findById(_bookId).orElseThrow(() -> new BaseException("There is no book with this id.", NOT_EXIST)
+    public ReservationDTO endReservation(long _bookId) {
+        BookDTO book =  BookDTO.from(this.bookRepository.findById(_bookId).orElseThrow(() -> new BaseException("There is no book with this id.", NOT_EXIST)
         ));
-        Reservation reservation = Reservation.from(this.reservationRepository.findByBookAndReturnDate(BookEntity.from(book),null)
+        ReservationDTO reservation = ReservationDTO.from(this.reservationRepository.findByBookAndReturnDate(Book.from(book),null)
                 .orElseThrow(() -> new BaseException("this book doesn't reserved now.",NOT_EXIST)));
         this.returnBook(reservation);
-        this.bookRepository.save(BookEntity.from(reservation.getBook()));
-        this.userRepository.save(UserEntity.from(reservation.getUser()));
-        return Reservation.from(this.reservationRepository.save(ReservationEntity.from(reservation)));
+        this.bookRepository.save(Book.from(reservation.getBook()));
+        this.userRepository.save(User.from(reservation.getUser()));
+        return ReservationDTO.from(this.reservationRepository.save(Reservation.from(reservation)));
     }
 
-    public void reserveBook(Reservation reservation) {
+    public void reserveBook(ReservationDTO reservation) {
         if (reservation.getBook().isReserved())
             throw new BaseException(String.format("%s is reserved right now.", reservation.getBook().getTitle()), ExceptionsEnum.IS_RESERVED);
         int MAX_RESERVES = 3;
@@ -65,7 +65,7 @@ public class ReservationService {
     }
 
 
-    public void returnBook(Reservation reservation) {
+    public void returnBook(ReservationDTO reservation) {
         reservation.getUser().setReserves(reservation.getUser().getReserves() - 1);
         reservation.getBook().setReserved(false);
         reservation.setReturnDate(LocalDateTime.now());

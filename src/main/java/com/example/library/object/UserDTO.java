@@ -1,6 +1,6 @@
 package com.example.library.object;
 
-import com.example.library.entity.UserEntity;
+import com.example.library.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Builder
 @Data
-public class User {
+public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     @JsonProperty("phone_number")
@@ -24,8 +24,8 @@ public class User {
     @JsonIgnore
     private int reserves;
 
-    public static User from(UserEntity user) {
-        return User.builder()
+    public static UserDTO from(User user) {
+        return UserDTO.builder()
                 .id(user.getId())
                 .phoneNumber(user.getPhoneNumber())
                 .firstName(user.getFirstName())

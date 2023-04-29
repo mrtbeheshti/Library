@@ -1,6 +1,6 @@
 package com.example.library.entity;
 
-import com.example.library.object.Reservation;
+import com.example.library.object.ReservationDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,17 +13,17 @@ import java.time.LocalDateTime;
 @Entity(name = "lib_reservation")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationEntity extends BaseEntity{
+public class Reservation extends BaseEntity{
     @Transient
     final private int MaxReserves = 3;
 
-    @ManyToOne (fetch = FetchType.EAGER,targetEntity = UserEntity.class)
+    @ManyToOne (fetch = FetchType.EAGER,targetEntity = User.class)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
-    @OneToOne(targetEntity = BookEntity.class)
+    @OneToOne(targetEntity = Book.class)
     @JoinColumn(name = "book_id")
-    private BookEntity book;
+    private Book book;
 
     @Column(name = "reserve_date")
     private LocalDateTime reserveDate;
@@ -31,12 +31,12 @@ public class ReservationEntity extends BaseEntity{
     @Column(name = "return_date")
     private LocalDateTime returnDate;
 
-    public static ReservationEntity from(Reservation reserve){
-        return ReservationEntity
+    public static Reservation from(ReservationDTO reserve){
+        return Reservation
                 .builder()
                 .id(reserve.getId())
-                .user(UserEntity.from(reserve.getUser()))
-                .book(BookEntity.from(reserve.getBook()))
+                .user(User.from(reserve.getUser()))
+                .book(Book.from(reserve.getBook()))
                 .reserveDate(reserve.getReserveDate())
                 .returnDate(reserve.getReturnDate())
                 .build();

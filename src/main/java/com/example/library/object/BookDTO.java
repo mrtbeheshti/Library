@@ -1,6 +1,6 @@
 package com.example.library.object;
 
-import com.example.library.entity.BookEntity;
+import com.example.library.entity.Book;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Book {
+public class BookDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     @JsonProperty(value = "title")
@@ -33,8 +33,8 @@ public class Book {
     @JsonIgnore
     private boolean isReserved;
 
-    public static Book from(BookEntity book){
-        return Book.builder()
+    public static BookDTO from(Book book){
+        return BookDTO.builder()
                 .id(book.getId())
                 .authors(book.getAuthors())
                 .title(book.getTitle())

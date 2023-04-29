@@ -1,6 +1,6 @@
 package com.example.library.entity;
 
-import com.example.library.object.User;
+import com.example.library.object.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Entity(name = "lib_user")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity extends BaseEntity{
+public class User extends BaseEntity{
 
     @Column(name = "first_name")
     private String firstName;
@@ -32,8 +32,8 @@ public class UserEntity extends BaseEntity{
     @Column(name = "reserves")
     private int reserves;
 
-    public static UserEntity from(User user) {
-        return UserEntity.builder()
+    public static User from(UserDTO user) {
+        return User.builder()
                 .id(user.getId())
                 .phoneNumber(user.getPhoneNumber())
                 .firstName(user.getFirstName())
