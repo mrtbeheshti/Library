@@ -14,6 +14,8 @@ import com.example.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 import static com.example.library.exception.ExceptionsEnum.NOT_EXIST;
 
 
@@ -24,6 +26,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
+
     public Reservation reserve(long _bookId, long _userId) {
         Book book = Book.from(this.bookRepository.findById(_bookId).orElseThrow(
                 () -> new BaseException("There is no book with this id.", NOT_EXIST)
@@ -33,7 +36,7 @@ public class ReservationService {
         ));
 
         Reservation reservation = Reservation.builder().book(book).user(user).build();
-        reservation.reserveBook();
+        this.reserveBook(reservation);
 
         this.bookRepository.save(BookEntity.from(book));
         this.userRepository.save(UserEntity.from(user));
@@ -44,9 +47,28 @@ public class ReservationService {
         ));
         Reservation reservation = Reservation.from(this.reservationRepository.findByBookAndReturnDate(BookEntity.from(book),null)
                 .orElseThrow(() -> new BaseException("this book doesn't reserved now.",NOT_EXIST)));
-        reservation.returnBook();
+        this.returnBook(reservation);
         this.bookRepository.save(BookEntity.from(reservation.getBook()));
         this.userRepository.save(UserEntity.from(reservation.getUser()));
         return Reservation.from(this.reservationRepository.save(ReservationEntity.from(reservation)));
     }
+
+    public void reserveBook(Reservation reservation) {
+        if (reservation.getBook().isReserved())
+            throw new BaseException(String.format("%s is reserved right now.", reservation.getBook().getTitle()), ExceptionsEnum.IS_RESERVED);
+        int MAX_RESERVES = 3;
+        if (reservation.getUser().getReserves() > MAX_RESERVES - 1)
+            throw new BaseException(String.format("%s %s has reached maximum reserves", reservation.getUser().getFirstName(), reservation.getUser().getLastName()), ExceptionsEnum.MAXIMUM_RESERVES_REACHED);
+        reservation.getUser().setReserves(reservation.getUser().getReserves() + 1);
+        reservation.getBook().setReserved(true);
+        reservation.setReserveDate(LocalDateTime.now());
+    }
+
+
+    public void returnBook(Reservation reservation) {
+        reservation.getUser().setReserves(reservation.getUser().getReserves() - 1);
+        reservation.getBook().setReserved(false);
+        reservation.setReturnDate(LocalDateTime.now());
+    }
+
 }
