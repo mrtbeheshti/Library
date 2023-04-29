@@ -45,12 +45,11 @@ public class ReservationService {
     public ReservationDTO endReservation(long _bookId) {
         BookDTO book =  BookDTO.from(this.bookRepository.findById(_bookId).orElseThrow(() -> new BaseException("There is no book with this id.", NOT_EXIST)
         ));
-        ReservationDTO reservation = ReservationDTO.from(this.reservationRepository.findByBookAndReturnDate(Book.from(book),null)
+        ReservationDTO reservation = ReservationDTO.from(this.reservationRepository.findByBook(Book.from(book))
                 .orElseThrow(() -> new BaseException("this book doesn't reserved now.",NOT_EXIST)));
+        this.reservationRepository.delete(Reservation.from(reservation));
         this.returnBook(reservation);
-        this.bookRepository.save(Book.from(reservation.getBook()));
-        this.userRepository.save(User.from(reservation.getUser()));
-        return ReservationDTO.from(this.reservationRepository.save(Reservation.from(reservation)));
+        return reservation;
     }
 
     public void reserveBook(ReservationDTO reservation) {
@@ -68,7 +67,8 @@ public class ReservationService {
     public void returnBook(ReservationDTO reservation) {
         reservation.getUser().setReserves(reservation.getUser().getReserves() - 1);
         reservation.getBook().setReserved(false);
-        reservation.setReturnDate(LocalDateTime.now());
+        this.bookRepository.save(Book.from(reservation.getBook()));
+        this.userRepository.save(User.from(reservation.getUser()));
     }
 
 }

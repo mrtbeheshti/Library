@@ -3,10 +3,7 @@ package com.example.library.controller;
 import com.example.library.object.ReservationDTO;
 import com.example.library.service.ReservationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +19,7 @@ public class ReservationController {
         return this.service.reserve(bookId,userId);
     }
 
-    @PutMapping("/return")
+    @DeleteMapping("/reserve")
     public ReservationDTO endReservation(@RequestParam(value = "book_id") long bookId) {
         return this.service.endReservation(bookId);
     }

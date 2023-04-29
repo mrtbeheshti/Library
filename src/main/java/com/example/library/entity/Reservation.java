@@ -28,8 +28,6 @@ public class Reservation extends BaseEntity{
     @Column(name = "reserve_date")
     private LocalDateTime reserveDate;
 
-    @Column(name = "return_date")
-    private LocalDateTime returnDate;
 
     public static Reservation from(ReservationDTO reserve){
         return Reservation
@@ -38,7 +36,6 @@ public class Reservation extends BaseEntity{
                 .user(User.from(reserve.getUser()))
                 .book(Book.from(reserve.getBook()))
                 .reserveDate(reserve.getReserveDate())
-                .returnDate(reserve.getReturnDate())
                 .build();
     }
 

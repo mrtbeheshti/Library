@@ -34,6 +34,4 @@ public class BaseEntity {
     @UpdateTimestamp
     private LocalDateTime updateOn;
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
 }

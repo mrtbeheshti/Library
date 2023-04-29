@@ -21,8 +21,6 @@ public class ReservationDTO {
     private BookDTO book;
     @JsonProperty(value = "reserve_date")
     private LocalDateTime reserveDate;
-    @JsonProperty(value = "return_date")
-    private LocalDateTime returnDate;
 
 
     public static ReservationDTO from(Reservation reserve) {
@@ -31,7 +29,6 @@ public class ReservationDTO {
                 .user(UserDTO.from(reserve.getUser()))
                 .book(BookDTO.from(reserve.getBook()))
                 .reserveDate(reserve.getReserveDate())
-                .returnDate(reserve.getReturnDate())
                 .build();
     }
 }
