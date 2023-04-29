@@ -12,6 +12,7 @@ import com.example.library.repository.BookRepository;
 import com.example.library.repository.ReservationRepository;
 import com.example.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ import static com.example.library.exception.ExceptionsEnum.NOT_EXIST;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+    @Value("${reservation.max_reserves}")
+    private int MAX_RESERVES;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
@@ -56,8 +59,7 @@ public class ReservationService {
     public void reserveBook(Reservation reservation) {
         if (reservation.getBook().isReserved())
             throw new BaseException(String.format("%s is reserved right now.", reservation.getBook().getTitle()), ExceptionsEnum.IS_RESERVED);
-        int MAX_RESERVES = 3;
-        if (reservation.getUser().getReserves() > MAX_RESERVES - 1)
+        if (reservation.getUser().getReserves() > this.MAX_RESERVES - 1)
             throw new BaseException(String.format("%s %s has reached maximum reserves", reservation.getUser().getFirstName(), reservation.getUser().getLastName()), ExceptionsEnum.MAXIMUM_RESERVES_REACHED);
         reservation.getUser().setReserves(reservation.getUser().getReserves() + 1);
         reservation.getBook().setReserved(true);

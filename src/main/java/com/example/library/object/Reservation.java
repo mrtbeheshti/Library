@@ -1,9 +1,6 @@
 package com.example.library.object;
 
 import com.example.library.entity.ReservationEntity;
-import com.example.library.exception.BaseException;
-import com.example.library.exception.ExceptionsEnum;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
