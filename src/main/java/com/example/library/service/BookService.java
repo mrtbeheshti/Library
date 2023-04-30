@@ -1,34 +1,33 @@
 package com.example.library.service;
 
+import com.example.library.entity.Book;
 import com.example.library.exception.BaseException;
 import com.example.library.exception.ExceptionsEnum;
-import com.example.library.object.Book;
+import com.example.library.object.BookDTO;
+import com.example.library.repository.BookRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.library.object.Library.books;
-import static java.lang.Math.E;
-import static java.lang.Math.min;
-
 
 @Service
-public class BookService {
+@RequiredArgsConstructor
+public class BookService{
+    final BookRepository repository;
+    public List<BookDTO> getBooks(int page, int size) {
 
-    public List<Book> getBooks(int page,int size) {
-        return books.subList(page * size, min((page + 1) * size, books.size()));
+        return this.repository.findAll(PageRequest.of(page, size)).getContent()
+                .stream().map(BookDTO::from).toList();
     }
 
-    public Book getBook(long id) {
-        return books.stream().filter(book -> book.getId() == id).findFirst().orElseThrow(()-> new BaseException("There is no book with this id.", ExceptionsEnum.NOT_EXIST));
+    public BookDTO getBook(long id) {
+        return BookDTO.from(this.repository.findById(id).orElseThrow(()-> new BaseException("There is no book with this id.", ExceptionsEnum.NOT_EXIST)));
     }
 
-    public Book addBook(Book book) {
+    public BookDTO addBook(BookDTO book) {
         book.setReserved(false);
-        if (books.stream().anyMatch(b -> book.getId() == b.getId())) {
-            throw new BaseException(String.format("Book %s already exist.",book.getTitle()),ExceptionsEnum.ALREADY_EXIST);
-        }
-        books.add(book);
-        return book;
+        return BookDTO.from(this.repository.save(Book.from((book))));
     }
 }
