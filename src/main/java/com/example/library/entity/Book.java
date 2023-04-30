@@ -1,9 +1,9 @@
 package com.example.library.entity;
 
+import com.example.library.enums.CategoryEnum;
+import com.example.library.enums.LanguageEnum;
 import com.example.library.object.BookDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -27,8 +27,9 @@ public class Book extends BaseEntity{
     @ElementCollection
     private List<String> authors= new ArrayList<>();
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "language",nullable = false)
-    private String language;
+    private LanguageEnum language;
 
     @Column(name = "publish_date")
     private LocalDate publishDate;
@@ -36,9 +37,10 @@ public class Book extends BaseEntity{
     @Column(name = "publisher")
     private String publisher;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "categories")
     @ElementCollection
-    private List<String> categories;
+    private List<CategoryEnum> categories;
 
     @Column(name = "rate")
     private float rate;

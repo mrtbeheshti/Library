@@ -1,6 +1,8 @@
 package com.example.library.object;
 
 import com.example.library.entity.Book;
+import com.example.library.enums.CategoryEnum;
+import com.example.library.enums.LanguageEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,7 +32,7 @@ public class BookDTO {
 
     @NotNull(message = "language is required")
     @JsonProperty(value = "language")
-    private String language;
+    private LanguageEnum language;
 
     @JsonProperty(value = "publish_date")
     private LocalDate publishDate;
@@ -39,7 +41,7 @@ public class BookDTO {
     private String publisher;
 
     @JsonProperty(value = "categories")
-    private List<String> categories;
+    private List<CategoryEnum> categories;
 
     @JsonProperty(value = "rate",defaultValue = "0.0",access = JsonProperty.Access.READ_ONLY)
     private float rate;
