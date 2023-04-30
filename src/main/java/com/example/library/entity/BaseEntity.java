@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @Id
     @GeneratedValue
-    @Column
+    @Column(name = "id")
     private long id;
 
     @Column(name = "created_on", updatable = false)
