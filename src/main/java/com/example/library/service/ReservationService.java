@@ -4,7 +4,7 @@ import com.example.library.entity.Book;
 import com.example.library.entity.Reservation;
 import com.example.library.entity.User;
 import com.example.library.exception.BaseException;
-import com.example.library.exception.ExceptionsEnum;
+import com.example.library.enums.ExceptionEnum;
 import com.example.library.object.BookDTO;
 import com.example.library.object.ReservationDTO;
 import com.example.library.object.UserDTO;
@@ -14,9 +14,7 @@ import com.example.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
-import static com.example.library.exception.ExceptionsEnum.NOT_EXIST;
+import static com.example.library.enums.ExceptionEnum.NOT_EXIST;
 
 
 @Service
@@ -54,10 +52,10 @@ public class ReservationService {
 
     public void reserveBook(ReservationDTO reservation) {
         if (reservation.getBook().isReserved())
-            throw new BaseException(String.format("%s is reserved right now.", reservation.getBook().getTitle()), ExceptionsEnum.IS_RESERVED);
+            throw new BaseException(String.format("%s is reserved right now.", reservation.getBook().getTitle()), ExceptionEnum.IS_RESERVED);
         int MAX_RESERVES = 3;
         if (reservation.getUser().getReserves() > MAX_RESERVES - 1)
-            throw new BaseException(String.format("%s %s has reached maximum reserves", reservation.getUser().getFirstName(), reservation.getUser().getLastName()), ExceptionsEnum.MAXIMUM_RESERVES_REACHED);
+            throw new BaseException(String.format("%s %s has reached maximum reserves", reservation.getUser().getFirstName(), reservation.getUser().getLastName()), ExceptionEnum.MAXIMUM_RESERVES_REACHED);
         reservation.getUser().setReserves(reservation.getUser().getReserves() + 1);
         reservation.getBook().setReserved(true);
     }
