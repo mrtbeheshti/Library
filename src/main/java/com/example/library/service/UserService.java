@@ -24,4 +24,10 @@ public class UserService {
                 .orElseThrow(() -> new BaseException("there is no user by this id.", ExceptionEnum.NOT_EXIST)));
     }
 
+    public String authorizeUser(long id) {
+        User user = this.repository.findById(id)
+                .orElseThrow(() -> new BaseException("there is no user by this id.", ExceptionEnum.NOT_EXIST));
+        return "this.repository.save(user).getId();";
+    }
+
 }

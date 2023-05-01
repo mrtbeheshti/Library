@@ -22,4 +22,11 @@ public class UserController {
     public UserDTO getUser(@PathVariable long id) {
         return this.service.getUser(id);
     }
+
+    @GetMapping("authorize/{id}")
+    public String authorizeUser(@PathVariable long id) {
+        if (!this.service.authorizeUser(id).isEmpty())
+            return "authorized";
+        else return "not authorized";
+    }
 }

@@ -1,7 +1,5 @@
 package com.example.library.enums;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 public enum CategoryEnum {
     SIGNAL_PROCESSING,

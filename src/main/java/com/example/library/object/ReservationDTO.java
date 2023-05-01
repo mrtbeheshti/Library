@@ -2,7 +2,6 @@ package com.example.library.object;
 
 import com.example.library.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
