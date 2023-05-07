@@ -1,10 +1,13 @@
 package com.example.library.entity;
 
+import com.example.library.enums.RoleEnum;
 import com.example.library.object.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
 
 @SuperBuilder
 @Setter
@@ -32,6 +35,11 @@ public class User extends BaseEntity{
     @Column(name = "reserves")
     private int reserves;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(name = "roles")
+    @Builder.Default
+    private Collection<RoleEnum> roles=new HashSet<>();
+
     public static User from(UserDTO user) {
         return User.builder()
                 .id(user.getId())
@@ -40,6 +48,7 @@ public class User extends BaseEntity{
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
                 .reserves(user.getReserves())
+                .roles(user.getRoles())
                 .build();
     }
 }

@@ -1,14 +1,19 @@
 package com.example.library.object;
 
 import com.example.library.entity.User;
+import com.example.library.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Builder
 @Data
@@ -34,6 +39,12 @@ public class UserDTO {
     private LocalDate birthdate;
 
     @JsonIgnore
+    @JsonProperty(defaultValue = "USER")
+    @ElementCollection
+    @Enumerated(EnumType.ORDINAL)
+    private Collection<RoleEnum> roles;
+
+    @JsonIgnore
     @JsonProperty(defaultValue = "0")
     private int reserves;
 
@@ -45,6 +56,7 @@ public class UserDTO {
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
                 .reserves(user.getReserves())
+                .roles(user.getRoles())
                 .build();
     }
 }

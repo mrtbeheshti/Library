@@ -1,38 +1,44 @@
 package com.example.library.security;
 
-import com.example.library.manager.UserManager;
+import com.example.library.entity.User;
+import com.example.library.enums.RoleEnum;
+import com.example.library.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
-
+@Component
+@RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
-
-    private final UserManager userManager;
+    @Value("${jwt.secret}")
+    private String secret;
+    private final UserRepository userRepository;
 
     private static final String TOKEN_BEARER_TYPE = "Bearer";
-    public AuthorizationFilter( UserManager userManager){
-//        super(authenticationManager);
-        this.userManager = userManager;
-    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-//        String header = request.getHeader("Authorization");
-//        if (header == null || !header.startsWith("Bearer ")) {
-//            chain.doFilter(request, response);
-//            return;
-//        }
-//        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        chain.doFilter(request, response);
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+
 
         if (header == null || !header.startsWith(TOKEN_BEARER_TYPE)) {
             chain.doFilter(request, response);
@@ -46,6 +52,29 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request){
-        return null;
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (token == null)
+            return null;
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        try{
+            token = token.replace(TOKEN_BEARER_TYPE + " ", "");
+            if (token.isEmpty())
+                return null;
+            SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+            Jws<Claims> jwt = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Long user_id = jwt.getBody().get("user_id", Long.class);
+            Optional<User> user = userRepository.findById(user_id);
+
+            if (user.isEmpty()) {
+                throw new RuntimeException("User not found");
+            }
+
+            Collection<RoleEnum> roles = user.get().getRoles();
+            roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role.name())));
+            return new UsernamePasswordAuthenticationToken(user_id, null, authorities);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Token is invalid");
+        }
     }
 }

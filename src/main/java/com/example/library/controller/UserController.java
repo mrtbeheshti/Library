@@ -3,6 +3,7 @@ package com.example.library.controller;
 import com.example.library.object.UserDTO;
 import com.example.library.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,14 +20,13 @@ public class UserController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('ROLE_BOOKER')")
     public UserDTO getUser(@PathVariable long id) {
         return this.service.getUser(id);
     }
 
-    @GetMapping("authorize/{id}")
+    @PostMapping("authorize/{id}")
     public String authorizeUser(@PathVariable long id) {
-        if (!this.service.authorizeUser(id).isEmpty())
-            return "authorized";
-        else return "not authorized";
+        return this.service.authorizeUser(id);
     }
 }

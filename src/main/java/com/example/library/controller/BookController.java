@@ -4,6 +4,7 @@ package com.example.library.controller;
 import com.example.library.object.BookDTO;
 import com.example.library.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class BookController {
     private final BookService service;
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<BookDTO> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return  this.service.getBooks(page,size);
     }
