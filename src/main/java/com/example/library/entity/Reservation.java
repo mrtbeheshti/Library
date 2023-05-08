@@ -1,7 +1,7 @@
 package com.example.library.entity;
 
 import com.example.library.object.ReservationDTO;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;

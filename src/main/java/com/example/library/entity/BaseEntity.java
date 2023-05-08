@@ -1,9 +1,9 @@
 package com.example.library.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +33,6 @@ public class BaseEntity {
     @Column(name = "update_on")
     @UpdateTimestamp
     private LocalDateTime updateOn;
+
 
 }

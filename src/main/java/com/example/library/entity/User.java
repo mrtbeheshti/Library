@@ -2,7 +2,9 @@ package com.example.library.entity;
 
 import com.example.library.enums.RoleEnum;
 import com.example.library.object.UserDTO;
-import jakarta.persistence.*;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
@@ -22,7 +24,7 @@ public class User extends BaseEntity{
 
     @Column(name = "last_name",nullable = false)
     private String lastName;
-
+    @NotNull
     @Column(name="phone_number",
             unique = true,
             nullable = false

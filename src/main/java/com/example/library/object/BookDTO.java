@@ -5,9 +5,10 @@ import com.example.library.enums.CategoryEnum;
 import com.example.library.enums.LanguageEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 @Builder
@@ -62,4 +63,6 @@ public class BookDTO {
                 .isReserved(book.isReserved())
                 .build();
     }
+
+
 }

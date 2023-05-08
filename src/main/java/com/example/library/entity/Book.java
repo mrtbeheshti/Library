@@ -3,7 +3,7 @@ package com.example.library.entity;
 import com.example.library.enums.CategoryEnum;
 import com.example.library.enums.LanguageEnum;
 import com.example.library.object.BookDTO;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

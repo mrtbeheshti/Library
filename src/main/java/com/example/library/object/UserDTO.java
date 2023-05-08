@@ -4,11 +4,11 @@ import com.example.library.entity.User;
 import com.example.library.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import javax.persistence.ElementCollection;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 

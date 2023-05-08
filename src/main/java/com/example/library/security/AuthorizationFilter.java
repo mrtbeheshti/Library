@@ -8,10 +8,10 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -62,7 +62,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 return null;
             SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
             Jws<Claims> jwt = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            Long user_id = jwt.getBody().get("user_id", Long.class);
+            Long user_id = jwt.getBody().get("^user_id$", Long.class);
             Optional<User> user = userRepository.findById(user_id);
 
             if (user.isEmpty()) {

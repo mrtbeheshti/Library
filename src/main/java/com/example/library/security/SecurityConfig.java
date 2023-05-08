@@ -30,20 +30,20 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeHttpRequests()
-                .requestMatchers(
-                        "/users/**",
-                        "/users"
-                )
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(authorizationFilter , UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authorizeHttpRequests()
+                .antMatchers("/users/authorize/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/swagger-ui.html/swagger-resources/configuration/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/swagger-resources").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v2/**").permitAll()
+                .anyRequest()
+                .authenticated();
 
         return http.build();
     }

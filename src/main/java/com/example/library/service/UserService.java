@@ -39,6 +39,8 @@ public class UserService {
     }
 
     public String authorizeUser(long id) {
+        if(!this.repository.existsById(id))
+            throw new BaseException("there is no user by this id.", ExceptionEnum.NOT_EXIST);
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         return "Bearer " + Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS256)
