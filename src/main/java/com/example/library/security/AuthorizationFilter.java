@@ -62,8 +62,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 return null;
             SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
             Jws<Claims> jwt = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            Long user_id = jwt.getBody().get("^user_id$", Long.class);
-            Optional<User> user = userRepository.findById(user_id);
+            Long userId = jwt.getBody().get("user_id", Long.class);
+            Optional<User> user = userRepository.findById(userId);
 
             if (user.isEmpty()) {
                 throw new RuntimeException("User not found");
@@ -71,7 +71,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
             Collection<RoleEnum> roles = user.get().getRoles();
             roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role.name())));
-            return new UsernamePasswordAuthenticationToken(user_id, null, authorities);
+            return new UsernamePasswordAuthenticationToken(userId, null, authorities);
         }
         catch (Exception e) {
             throw new RuntimeException("Token is invalid");

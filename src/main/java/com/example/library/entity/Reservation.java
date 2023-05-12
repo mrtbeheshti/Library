@@ -1,5 +1,6 @@
 package com.example.library.entity;
 
+import com.example.library.enums.RoleEnum;
 import com.example.library.object.ReservationDTO;
 import javax.persistence.*;
 import lombok.*;
@@ -7,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SuperBuilder
 @Setter
@@ -15,8 +17,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation extends BaseEntity{
-    @Transient
-    final private int MaxReserves = 3;
 
     @ManyToOne (fetch = FetchType.EAGER,targetEntity = User.class)
     @JoinColumn(name = "user_id",nullable = false)
@@ -35,7 +35,7 @@ public class Reservation extends BaseEntity{
         return Reservation
                 .builder()
                 .id(reserve.getId())
-                .user(User.from(reserve.getUser()))
+                .user(User.from(reserve.getUser(), List.of(RoleEnum.ROLE_USER)))
                 .book(Book.from(reserve.getBook()))
                 .reserveDate(reserve.getReserveDate())
                 .build();

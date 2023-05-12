@@ -38,7 +38,7 @@ public class ReservationController {
         return this.service.reserve(bookId,userId);
     }
 
-    @DeleteMapping("{bookId}")
+    @DeleteMapping(value = "{bookId}")
     @ApiOperation(value = "End reservation.", httpMethod = "DELETE")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = ReservationDTO.class),

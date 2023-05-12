@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -28,7 +29,7 @@ public class UserService {
     public UserDTO addUser(UserDTO user) {
         if (this.repository.existsByPhoneNumber(user.getPhoneNumber()))
             throw new BaseException("this phone number is already exist.", ExceptionEnum.ALREADY_EXIST);
-        User newUser =  User.from(user);
+        User newUser =  User.from(user, List.of(RoleEnum.ROLE_USER));
         newUser.setRoles(Collections.singletonList(RoleEnum.ROLE_USER));
         return UserDTO.from(this.repository.save(newUser));
     }

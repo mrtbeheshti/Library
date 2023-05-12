@@ -42,7 +42,8 @@ public class User extends BaseEntity{
     @Builder.Default
     private Collection<RoleEnum> roles=new HashSet<>();
 
-    public static User from(UserDTO user) {
+    public static User from(UserDTO user, Collection<RoleEnum> roles) {
+
         return User.builder()
                 .id(user.getId())
                 .phoneNumber(user.getPhoneNumber())
@@ -50,7 +51,7 @@ public class User extends BaseEntity{
                 .lastName(user.getLastName())
                 .birthdate(user.getBirthdate())
                 .reserves(user.getReserves())
-                .roles(user.getRoles())
+                .roles(roles)
                 .build();
     }
 }

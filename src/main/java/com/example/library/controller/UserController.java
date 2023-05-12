@@ -20,6 +20,7 @@ public class UserController {
     private final UserService service;
 
     @PostMapping()
+    @PreAuthorize("hasAnyRole('ROLE_BOOKER','ROLE_ADMIN')")
     @ApiOperation(value = "Create user.", httpMethod = "POST")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = UserDTO.class),
@@ -34,8 +35,7 @@ public class UserController {
 
     }
 
-    @GetMapping("{id}")
-    @PreAuthorize("hasAnyRole('ROLE_BOOKER')")
+    @GetMapping(value = "{id}")
     @ApiOperation(value = "Get user by id.", httpMethod = "GET")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = UserDTO.class),
@@ -49,7 +49,7 @@ public class UserController {
         return this.service.getUser(id);
     }
 
-    @PostMapping("authorize/{id}")
+    @PostMapping(value = "authorize/{id}")
     @ApiOperation(value = "Authorize user.", httpMethod = "POST")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = String.class),

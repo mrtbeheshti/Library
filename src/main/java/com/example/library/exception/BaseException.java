@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BaseException extends RuntimeException {
-    private HttpStatus status;
-    private LocalDateTime time;
+    private final HttpStatus status;
+    private final LocalDateTime time;
     public BaseException(String message, ExceptionEnum exceptionEnum){
-        super(message);
+        super(message,null);
         this.status = exceptionEnum.getStatus();
         this.time = LocalDateTime.now();
     }
