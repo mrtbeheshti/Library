@@ -1,7 +1,9 @@
 package com.example.library.security;
 
 import com.example.library.entity.User;
+import com.example.library.enums.ExceptionEnum;
 import com.example.library.enums.RoleEnum;
+import com.example.library.exception.BaseException;
 import com.example.library.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -66,7 +68,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             Optional<User> user = userRepository.findById(userId);
 
             if (user.isEmpty()) {
-                throw new RuntimeException("User not found");
+                throw new BaseException("there is no user by this id.", ExceptionEnum.NOT_EXIST);
             }
 
             Collection<RoleEnum> roles = user.get().getRoles();
@@ -74,7 +76,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             return new UsernamePasswordAuthenticationToken(userId, null, authorities);
         }
         catch (Exception e) {
-            throw new RuntimeException("Token is invalid");
+            throw new BaseException("token is invalid.", ExceptionEnum.INVALID_TOKEN);
         }
     }
 }
