@@ -3,7 +3,6 @@ package com.example.library.service;
 import com.example.library.entity.Book;
 import com.example.library.entity.Reservation;
 import com.example.library.entity.User;
-import com.example.library.enums.RoleEnum;
 import com.example.library.exception.BaseException;
 import com.example.library.enums.ExceptionEnum;
 import com.example.library.object.BookDTO;
@@ -15,7 +14,6 @@ import com.example.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 import static com.example.library.enums.ExceptionEnum.NOT_EXIST;
 
@@ -29,28 +27,37 @@ public class ReservationService {
 
 
     public ReservationDTO reserve(long bookId, long userId) {
-        BookDTO book = BookDTO.from(this.bookRepository.findById(bookId).orElseThrow(
-                () -> new BaseException("There is no book with this id.", NOT_EXIST)
-        ));
-        UserDTO user = UserDTO.from(this.userRepository.findById(userId).orElseThrow(
+        User user = this.userRepository.findById(userId).orElseThrow(
                 () -> new BaseException("there is no user by this id.", NOT_EXIST)
-        ));
+        );
+        Book book = this.bookRepository.findById(bookId).orElseThrow(
+                () -> new BaseException("There is no book with this id.", NOT_EXIST)
+        );
+        BookDTO bookDTO = BookDTO.from(book);
+        UserDTO userDTO = UserDTO.from(user);
 
-        ReservationDTO reservation = ReservationDTO.builder().book(book).user(user).build();
-        this.reserveBook(reservation);
+        ReservationDTO reservationDTO = ReservationDTO.builder().book(bookDTO).user(userDTO).build();
+        Reservation newReservation = new Reservation();
+        this.reserveBook(reservationDTO);
 
-        this.bookRepository.save(Book.from(book));
-        this.userRepository.save(User.from(user, List.of(RoleEnum.ROLE_USER)));
-        return ReservationDTO.from(reservationRepository.save(Reservation.from(reservation)));
+        newReservation.map(reservationDTO);
+
+        this.bookRepository.save(book);
+        this.userRepository.save(user);
+        return ReservationDTO.from(this.reservationRepository.save(newReservation));
     }
+
     public ReservationDTO endReservation(long bookId) {
-        BookDTO book =  BookDTO.from(this.bookRepository.findById(bookId).orElseThrow(() -> new BaseException("There is no book with this id.", NOT_EXIST)
-        ));
-        ReservationDTO reservation = ReservationDTO.from(this.reservationRepository.findByBook(Book.from(book))
-                .orElseThrow(() -> new BaseException("this book doesn't reserved now.",NOT_EXIST)));
-        this.reservationRepository.delete(Reservation.from(reservation));
-        this.returnBook(reservation);
-        return reservation;
+        Book book = this.bookRepository.findById(bookId).orElseThrow(() -> new BaseException("There is no book with this id.", NOT_EXIST)
+        );
+        Reservation reservation = this.reservationRepository.findByBook(book)
+                .orElseThrow(() -> new BaseException("this book doesn't reserved now.", NOT_EXIST));
+        ReservationDTO reservationDTO = ReservationDTO.from(reservation);
+        this.returnBook(reservationDTO);
+
+        reservation.map(reservationDTO);
+        this.reservationRepository.delete(reservation);
+        return reservationDTO;
     }
 
     public void reserveBook(ReservationDTO reservation) {
@@ -67,8 +74,6 @@ public class ReservationService {
     public void returnBook(ReservationDTO reservation) {
         reservation.getUser().setReserves(reservation.getUser().getReserves() - 1);
         reservation.getBook().setReserved(false);
-        this.bookRepository.save(Book.from(reservation.getBook()));
-        this.userRepository.save(User.from(reservation.getUser(),List.of(RoleEnum.ROLE_USER)));
     }
 
 }

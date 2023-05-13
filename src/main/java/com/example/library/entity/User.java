@@ -42,6 +42,13 @@ public class User extends BaseEntity{
     @Builder.Default
     private Collection<RoleEnum> roles=new HashSet<>();
 
+    public void map(UserDTO user){
+        this.firstName=user.getFirstName();
+        this.lastName=user.getLastName();
+        this.phoneNumber=user.getPhoneNumber();
+        this.birthdate=user.getBirthdate();
+        this.reserves=user.getReserves();
+    }
     public static User from(UserDTO user, Collection<RoleEnum> roles) {
 
         return User.builder()

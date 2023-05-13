@@ -23,14 +23,16 @@ public class BookService{
     }
 
     public BookDTO getBook(long id) {
-        return BookDTO.from(this.repository.findById(id).orElseThrow(()-> new BaseException("There is no book with this id.", ExceptionEnum.NOT_EXIST)));
+        Book book = this.repository.findById(id).orElseThrow(()-> new BaseException("There is no book with this id.", ExceptionEnum.NOT_EXIST));
+        return BookDTO.from(book);
     }
 
     public BookDTO addBook(BookDTO book) {
         if (this.repository.existsByTitle(book.getTitle())){
             throw new BaseException("This book is already exist.", ExceptionEnum.ALREADY_EXIST);
         }
-        return BookDTO.from(this.repository.save(Book.from((book))));
+        Book newBook = this.repository.save(Book.from((book)));
+        return BookDTO.from(newBook);
     }
     public BookDTO deleteBook(long id) {
         BookDTO book = this.getBook(id);

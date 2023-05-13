@@ -30,6 +30,11 @@ public class Reservation extends BaseEntity{
     @CreationTimestamp
     private LocalDateTime reserveDate;
 
+    public void map(ReservationDTO reserve){
+        this.user.map(reserve.getUser());
+        this.book.map(reserve.getBook());
+        this.reserveDate=reserve.getReserveDate();
+    }
 
     public static Reservation from(ReservationDTO reserve){
         return Reservation

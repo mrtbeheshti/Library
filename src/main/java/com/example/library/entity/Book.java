@@ -49,6 +49,16 @@ public class Book extends BaseEntity{
     private boolean isReserved;
 
 
+    public void map(BookDTO book){
+        this.title=book.getTitle();
+        this.authors=book.getAuthors();
+        this.language=book.getLanguage();
+        this.publishDate=book.getPublishDate();
+        this.publisher=book.getPublisher();
+        this.categories=book.getCategories();
+        this.rate=book.getRate();
+        this.isReserved=book.isReserved();
+    }
     public static Book from(BookDTO book){
         return Book.builder()
                 .id(book.getId())
@@ -62,6 +72,8 @@ public class Book extends BaseEntity{
                 .isReserved(book.isReserved())
                 .build();
 
+
     }
+
 
 }
