@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("books")
-@Api(tags = {"Book"})
+@Api(tags = {"Book"},description = "Book APIs")
 @SwaggerDefinition(tags = {
         @Tag(name = "Book", description = "Book APIs")
 })
