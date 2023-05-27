@@ -1,22 +1,26 @@
 package com.example.library.service;
 
-import com.example.library.object.login.PodTokenRequestDTO;
-import com.example.library.object.login.PodTokenResponseDTO;
-import com.example.library.pod.sso.PodSso;
+import com.example.library.entity.User;
+import com.example.library.enums.RoleEnum;
+import com.example.library.util.LogUtil;
+import com.example.library.vo.auth.PodTokenResponseVo;
+import com.example.library.vo.auth.PodUserInfoVo;
+import com.example.library.pod.sso.PodAccounts;
+import com.example.library.pod.sso.PodApi;
+import com.example.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Base64;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationService{
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Value("${pod.sso.sso.address}")
     private String ssoAddress;
@@ -32,14 +36,13 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     private String clientSecret;
     @Value("${pod.sso.login.grant.type}")
     private String grantType;
-    private final String baseAuth = "Basic " + Base64.getEncoder().encodeToString((clientId+":"+clientSecret).getBytes());
-//    private final String baseAuth ="Basic MTI0NzU0bzEzMDk0NGQwYmM1ZDIwMjc3ZGFjODkzOTowNzY4OTk2ZQ==";
+    private final UserRepository userRepository;
+
     @Override
     public void login(HttpServletResponse response) {
         try {
             response.sendRedirect(getLoginAddress());
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -47,29 +50,41 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     }
 
     @Override
-    public void redirect(String code, HttpServletResponse response){
-        PodTokenRequestDTO podTokenRequestDTO = PodTokenRequestDTO.builder()
-                .grantType(grantType)
-                .code(code)
-                .redirectUri(redirectUri)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(ssoAddress)
-                .build();
-        PodSso podSso = retrofit.create(PodSso.class);
+    public void redirect(String code, HttpServletResponse response) {
+//        log.debug("My Debug Log");
+//        log.info("My Info Log");
+//        log.warn("My Warn Log");
+//        log.error("My error log");
+//        log.fatal("My fatal log");
+        PodAccounts podAccounts = ServiceGenerator.createService(PodAccounts.class,ssoAddress+"/");
+        String base64Auth = "Basic " + Base64.getEncoder().encodeToString((String.format("%s:%s",clientId,clientSecret)).getBytes());
+        PodTokenResponseVo tokenResponseDTO;
         try {
-            Call<PodTokenResponseDTO> tokenResponseDTO = podSso.getToken(podTokenRequestDTO,"Basic " + Base64.getEncoder().encodeToString((clientId+":"+clientSecret).getBytes()));
-            System.out.println(tokenResponseDTO.request());
-            Response<PodTokenResponseDTO> response1 = tokenResponseDTO.execute();
-//            PodTokenResponseDTO tokenResponseDTO1 = response1.body();
-            System.out.println(response1);
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
+            tokenResponseDTO = podAccounts.getToken(
+                    grantType,
+                    code,
+                    redirectUri,
+                    base64Auth
+            )
+                    .execute().body();
 
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return;
+        }
+        if (tokenResponseDTO == null) {
+//            log.warn("code {} is invalid.", code);
+            return;
+        }
+        PodUserInfoVo userInfo = getUserFromPod(tokenResponseDTO.getAccessToken()).get();
+//        log.info(String.format("Refresh token: %s", tokenResponseDTO.getRefreshToken()));
+//        log.info(String.format("Access token: %s", tokenResponseDTO.getAccessToken()));
+//        log.info(String.format("Expires in: %s", tokenResponseDTO.getExpiresIn()));
+
+        if(!userRepository.existsBySsoId(userInfo.getSsoId())){
+            User newUser = User.from(userInfo, Set.of(RoleEnum.ROLE_USER));
+            userRepository.save(newUser);
+        }
     }
 
     public String getLoginAddress() {
@@ -81,6 +96,16 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                 scope
         );
 
+    }
+
+    public Optional<PodUserInfoVo> getUserFromPod(String accessToken){
+        PodApi podApi = ServiceGenerator.createService(PodApi.class,"https://api.pod.ir/");
+        try {
+            return Optional.ofNullable(podApi.getUser(clientId, clientSecret, accessToken).execute().body().getResult());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return null;
+        }
     }
 
 

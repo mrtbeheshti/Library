@@ -5,6 +5,7 @@ import com.example.library.object.UserDTO;
 import com.example.library.service.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +20,8 @@ public class UserController {
 
     private final UserService service;
 
-    @PostMapping()
-    @PreAuthorize("hasAnyRole('ROLE_BOOKER','ROLE_ADMIN')")
-    @ApiOperation(value = "Create user.", httpMethod = "POST")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = UserDTO.class),
-            @ApiResponse(code = 400, message = "BAD REQUEST", response = BaseException.class),
-            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = BaseException.class),
-            @ApiResponse(code = 403, message = "ACCESS DENIED", response = BaseException.class),
-            @ApiResponse(code = 409, message = "CONFLICT", response = BaseException.class)
-    })
-    @ApiImplicitParam(name = "user", value = "User object.", dataType = "UserDTO", paramType = "body", required = true, dataTypeClass = UserDTO.class)
-    public UserDTO addUser(@RequestBody UserDTO user) {
-        return this.service.addUser(user);
-
-    }
-
     @GetMapping(value = "{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @ApiOperation(value = "Get user by id.", httpMethod = "GET")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK", response = UserDTO.class),
@@ -49,17 +35,4 @@ public class UserController {
         return this.service.getUser(id);
     }
 
-    @PostMapping(value = "authorize/{id}")
-    @ApiOperation(value = "Authorize user.", httpMethod = "POST")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = String.class),
-            @ApiResponse(code = 400, message = "BAD REQUEST", response = BaseException.class),
-            @ApiResponse(code = 401, message = "UNAUTHORIZED", response = BaseException.class),
-            @ApiResponse(code = 403, message = "ACCESS DENIED", response = BaseException.class),
-            @ApiResponse(code = 404, message = "NOT FOUND", response = BaseException.class)
-    })
-    @ApiImplicitParam(name = "id", value = "User id.", dataType = "long", paramType = "path", required = true, dataTypeClass = Long.class)
-    public String authorizeUser(@PathVariable long id) {
-        return this.service.authorizeUser(id);
-    }
 }

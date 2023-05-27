@@ -5,6 +5,7 @@ import com.example.library.object.BookDTO;
 import com.example.library.service.BookService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-
 
 @RestController()
 @RequestMapping("books")
@@ -90,6 +90,7 @@ public class BookController {
     @ApiImplicitParam(name = "book", value = "Book object.", dataType = "BookDTO", paramType = "body", required = true, dataTypeClass = BookDTO.class)
     public ResponseEntity<BookDTO> addBook(@RequestBody BookDTO book) {
         BookDTO bookDTO = this.service.addBook(book);
+//        log.info("Book added: {}", bookDTO);
         return new ResponseEntity<>(
                 bookDTO,
                 HttpStatus.CREATED
