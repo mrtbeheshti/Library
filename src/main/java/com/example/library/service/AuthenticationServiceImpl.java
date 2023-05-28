@@ -1,23 +1,37 @@
 package com.example.library.service;
 
 import com.example.library.entity.User;
+import com.example.library.enums.ExceptionEnum;
 import com.example.library.enums.RoleEnum;
+import com.example.library.enums.SubjectEnum;
+import com.example.library.exception.BaseException;
+import com.example.library.pojo.log.RequestLogPOJO;
+import com.example.library.pojo.log.ResponseLogPOJO;
+import com.example.library.pojo.log.ThrowableLogPOJO;
+import com.example.library.security.SocketPrincipal;
 import com.example.library.util.LogUtil;
 import com.example.library.vo.auth.PodTokenResponseVo;
 import com.example.library.vo.auth.PodUserInfoVo;
 import com.example.library.pod.sso.PodAccounts;
 import com.example.library.pod.sso.PodApi;
 import com.example.library.repository.UserRepository;
+import com.example.library.vo.auth.PodUserReqVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -42,46 +56,60 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void login(HttpServletResponse response) {
         try {
             response.sendRedirect(getLoginAddress());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) {
+            SocketPrincipal socketPrincipal = (SocketPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            ThrowableLogPOJO throwableLog = ThrowableLogPOJO.builder()
+                    .message("IOException at *login*")
+                    .subject(SubjectEnum.AUTH)
+                    .ssoId(String.valueOf(socketPrincipal.getSsoId()))
+                    .details(ex)
+                    .build();
+            LogUtil.error(log,throwableLog);
         }
-
-
     }
 
     @Override
     public void redirect(String code, HttpServletResponse response) {
-//        log.debug("My Debug Log");
-//        log.info("My Info Log");
-//        log.warn("My Warn Log");
-//        log.error("My error log");
-//        log.fatal("My fatal log");
-        PodAccounts podAccounts = ServiceGenerator.createService(PodAccounts.class,ssoAddress+"/");
-        String base64Auth = "Basic " + Base64.getEncoder().encodeToString((String.format("%s:%s",clientId,clientSecret)).getBytes());
-        PodTokenResponseVo tokenResponseDTO;
+        PodAccounts podAccounts = ServiceGenerator.createService(PodAccounts.class, ssoAddress + "/");
+        String base64Auth = "Basic " + Base64.getEncoder().encodeToString((String.format("%s:%s", clientId, clientSecret)).getBytes());
+        PodTokenResponseVo tokenResponseVo;
         try {
-            tokenResponseDTO = podAccounts.getToken(
+            Call<PodTokenResponseVo> call = podAccounts.getToken(
                     grantType,
                     code,
                     redirectUri,
                     base64Auth
-            )
-                    .execute().body();
+            );
+            RequestLogPOJO<PodTokenResponseVo> requestLog = RequestLogPOJO.<PodTokenResponseVo>builder()
+                    .details(call)
+                    .message("request to pod at *redirect*")
+                    .build();
+            LogUtil.info(log, requestLog);
+            Response<PodTokenResponseVo> reqResponse = call.execute();
 
+            tokenResponseVo = reqResponse.body();
+            ResponseLogPOJO<PodTokenResponseVo> responseLog = ResponseLogPOJO.<PodTokenResponseVo>builder()
+                    .details(reqResponse)
+                    .message("response from pod at *redirect*")
+                    .build();
+            LogUtil.info(log, responseLog);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            SocketPrincipal socketPrincipal = (SocketPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            ThrowableLogPOJO throwableLog = ThrowableLogPOJO.builder()
+                    .message("IOException at *redirect*")
+                    .subject(SubjectEnum.AUTH)
+                    .ssoId(String.valueOf(socketPrincipal.getSsoId()))
+                    .details(exception)
+                    .build();
+            LogUtil.error(log,throwableLog);
             return;
         }
-        if (tokenResponseDTO == null) {
-//            log.warn("code {} is invalid.", code);
+        if (tokenResponseVo == null) {
             return;
         }
-        PodUserInfoVo userInfo = getUserFromPod(tokenResponseDTO.getAccessToken()).get();
-//        log.info(String.format("Refresh token: %s", tokenResponseDTO.getRefreshToken()));
-//        log.info(String.format("Access token: %s", tokenResponseDTO.getAccessToken()));
-//        log.info(String.format("Expires in: %s", tokenResponseDTO.getExpiresIn()));
+        PodUserInfoVo userInfo = getUserFromPod(tokenResponseVo.getAccessToken()).orElseThrow(() -> new BaseException("aloof", ExceptionEnum.NOT_EXIST));
 
-        if(!userRepository.existsBySsoId(userInfo.getSsoId())){
+        if (!userRepository.existsBySsoId(userInfo.getSsoId())) {
             User newUser = User.from(userInfo, Set.of(RoleEnum.ROLE_USER));
             userRepository.save(newUser);
         }
@@ -98,14 +126,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     }
 
-    public Optional<PodUserInfoVo> getUserFromPod(String accessToken){
-        PodApi podApi = ServiceGenerator.createService(PodApi.class,"https://api.pod.ir/");
+    public Optional<PodUserInfoVo> getUserFromPod(String accessToken) {
+        PodApi podApi = ServiceGenerator.createService(PodApi.class, "https://api.pod.ir/");
         try {
-            return Optional.ofNullable(podApi.getUser(clientId, clientSecret, accessToken).execute().body().getResult());
+//            return Optional.ofNullable(Objects.requireNonNull(podApi.getUser(clientId, clientSecret, accessToken).execute().body()).getResult());
+            Call<PodUserReqVo> call = podApi.getUser(clientId, clientSecret, accessToken);
+            RequestLogPOJO<PodUserReqVo> requestLog= RequestLogPOJO.<PodUserReqVo>builder()
+                    .message("request to pod at *getUserFromPod*")
+                    .details(call)
+                    .build();
+            LogUtil.info(log,requestLog);
+            Response<PodUserReqVo> reqResponse = call.execute();
+            PodUserReqVo userReq = reqResponse.body();
+            ResponseLogPOJO<PodUserReqVo> responseLog = ResponseLogPOJO.<PodUserReqVo>builder()
+                    .details(reqResponse)
+                    .message("response from pod at *getUserFromPod*")
+                    .build();
+            LogUtil.info(log, responseLog);
+            return Optional.ofNullable(Objects.requireNonNull(userReq).getResult());
         } catch (IOException exception) {
-            exception.printStackTrace();
-            return null;
+            SocketPrincipal socketPrincipal = (SocketPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            ThrowableLogPOJO throwableLog = ThrowableLogPOJO.builder()
+                    .message("IOException at *getUserFromPod*")
+                    .subject(SubjectEnum.AUTH)
+                    .ssoId(String.valueOf(socketPrincipal.getSsoId()))
+                    .details(exception)
+                    .build();
+            LogUtil.error(log,throwableLog);
+            return Optional.empty();
         }
+
     }
 
 

@@ -3,7 +3,10 @@ package com.example.library.security;
 import com.example.library.entity.User;
 import com.example.library.enums.ExceptionEnum;
 import com.example.library.enums.RoleEnum;
+import com.example.library.enums.SubjectEnum;
 import com.example.library.exception.BaseException;
+import com.example.library.pojo.log.ThrowableLogPOJO;
+import com.example.library.util.LogUtil;
 import com.example.library.vo.auth.PodUserInfoVo;
 import com.example.library.repository.UserRepository;
 import com.example.library.service.AuthenticationServiceImpl;
@@ -12,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
@@ -59,18 +64,25 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             Optional<PodUserInfoVo> userInfo = authenticationService.getUserFromPod(token);
             if(userInfo.isEmpty())
                 throw new BaseException("token is invalid.", ExceptionEnum.NOT_EXIST);
-            Optional<User> user = userRepository.findBySsoId(userInfo.get().getSsoId());
-
-            if (user.isEmpty()) {
-                throw new BaseException("there is no user by this id.", ExceptionEnum.NOT_EXIST);
-            }
-
-            Collection<RoleEnum> roles = user.get().getRoles();
+            User user = userRepository.findBySsoId(userInfo.get().getSsoId()).orElseThrow(() -> new BaseException("there is no user by this id.", ExceptionEnum.NOT_EXIST));
+            SocketPrincipal socketPrincipal = SocketPrincipal.builder()
+                    .ssoId(user.getSsoId())
+                    .name(token)
+                    .build();
+            Collection<RoleEnum> roles = user.getRoles();
             roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(String.format("%s",role.name()))));
-            return new UsernamePasswordAuthenticationToken(user.get().getSsoId(), token, authorities);
+            return new UsernamePasswordAuthenticationToken(socketPrincipal, token, authorities);
         }
         catch (Exception e) {
-            throw new BaseException("token is invalid.", ExceptionEnum.INVALID_TOKEN);
+            BaseException exception = new BaseException("token is invalid.", ExceptionEnum.INVALID_TOKEN);
+            ThrowableLogPOJO throwableLogPOJO = ThrowableLogPOJO.builder()
+                    .message("Exception at UsernamePasswordAuthenticationToken")
+                    .details(exception)
+                    .ssoId("S")
+                    .subject(SubjectEnum.AUTH)
+                    .build();
+            LogUtil.error(log,throwableLogPOJO);
+            throw exception;
         }
     }
 }

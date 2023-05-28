@@ -21,9 +21,4 @@ public class AuthenticationController {
     public void redirect(@RequestParam("code") String code,HttpServletResponse response) {
         this.service.redirect(code,response);
     }
-    @GetMapping("/ali")
-    public String HelloAli(){
-        return "Hello Ali";
-    }
-
 }
