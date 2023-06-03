@@ -1,4 +1,4 @@
-package com.example.library.exception;
+package com.example.library.enums;
 
 
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
-public enum ExceptionsEnum {
+public enum ExceptionEnum {
     ALREADY_EXIST(HttpStatus.CONFLICT),
     NOT_EXIST(HttpStatus.NOT_FOUND),
     IS_RESERVED(HttpStatus.FORBIDDEN),

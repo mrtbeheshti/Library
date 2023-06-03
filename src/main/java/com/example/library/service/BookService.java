@@ -2,7 +2,7 @@ package com.example.library.service;
 
 import com.example.library.entity.Book;
 import com.example.library.exception.BaseException;
-import com.example.library.exception.ExceptionsEnum;
+import com.example.library.enums.ExceptionEnum;
 import com.example.library.object.BookDTO;
 import com.example.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,21 @@ public class BookService{
     }
 
     public BookDTO getBook(long id) {
-        return BookDTO.from(this.repository.findById(id).orElseThrow(()-> new BaseException("There is no book with this id.", ExceptionsEnum.NOT_EXIST)));
+        Book book = this.repository.findById(id).orElseThrow(()-> new BaseException("There is no book with this id.", ExceptionEnum.NOT_EXIST));
+        return BookDTO.from(book);
     }
 
     public BookDTO addBook(BookDTO book) {
-        book.setReserved(false);
-        return BookDTO.from(this.repository.save(Book.from((book))));
+        if (this.repository.existsByTitle(book.getTitle())){
+            throw new BaseException("This book is already exist.", ExceptionEnum.ALREADY_EXIST);
+        }
+        Book newBook = this.repository.save(Book.from((book)));
+        return BookDTO.from(newBook);
     }
+    public BookDTO deleteBook(long id) {
+        BookDTO book = this.getBook(id);
+        this.repository.delete(Book.from(book));
+        return book;
+    }
+
 }
